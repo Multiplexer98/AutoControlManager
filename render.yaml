@@ -7,6 +7,9 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
+      # Pinnata: pydantic-core non ha ancora wheel precompilati per le versioni più recenti di Python
+      - key: PYTHON_VERSION
+        value: 3.12.8
       # I valori vanno inseriti dalla dashboard Render (sync: false = non nel repo)
       - key: TURSO_DATABASE_URL
         sync: false
