@@ -13,7 +13,9 @@ import urllib.request
 import json
 
 GIORNI_PREAVVISO = int(os.getenv("GIORNI_PREAVVISO", "30"))
-DATABASE_URL = os.environ["TURSO_DATABASE_URL"]
+# Forza il trasporto HTTP (invece del websocket "libsql://"): alcune combinazioni
+# client/hosting falliscono l'handshake WS con Turso (400 Invalid response status).
+DATABASE_URL = os.environ["TURSO_DATABASE_URL"].replace("libsql://", "https://", 1)
 AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
 BREVO_API_KEY = os.environ["BREVO_API_KEY"]
 EMAIL_TO = os.environ["EMAIL_TO"]

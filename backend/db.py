@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # In locale si può usare "file:local.db" senza token.
-DATABASE_URL = os.getenv("TURSO_DATABASE_URL", "file:local.db")
+_RAW_URL = os.getenv("TURSO_DATABASE_URL", "file:local.db")
+# Forza il trasporto HTTP (invece del websocket "libsql://"): alcune combinazioni
+# client/hosting falliscono l'handshake WS con Turso (400 Invalid response status).
+DATABASE_URL = _RAW_URL.replace("libsql://", "https://", 1)
 AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
 
 SCHEMA = [
