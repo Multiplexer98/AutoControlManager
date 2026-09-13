@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 7 * * *" # ogni giorno alle 07:00 UTC
   workflow_dispatch:
+    inputs:
+      giorni_preavviso:
+        description: "Giorni di preavviso (utile per testare con scadenze più lontane)"
+        required: false
+        default: "30"
 
 jobs:
   reminder:
@@ -16,6 +21,7 @@ jobs:
       - run: pip install -r reminder/requirements.txt
       - run: python reminder/check_scadenze.py
         env:
+          GIORNI_PREAVVISO: ${{ github.event.inputs.giorni_preavviso || '30' }}
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
