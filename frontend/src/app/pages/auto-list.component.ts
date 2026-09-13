@@ -68,7 +68,9 @@ import { Auto } from '../core/models';
               <input name="anno" type="number" placeholder="Opzionale" [(ngModel)]="nuova.anno" />
             </label>
           </div>
-          <button type="submit">Aggiungi</button>
+          <div class="azioni-form">
+            <button type="submit">Aggiungi</button>
+          </div>
         </form>
       }
     </div>

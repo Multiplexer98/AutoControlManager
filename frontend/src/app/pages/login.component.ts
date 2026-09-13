@@ -12,23 +12,30 @@ import { AuthService } from '../core/auth.service';
     <div class="card" style="max-width:360px;margin:4rem auto">
       <h2>AutoControlManager</h2>
       <form (ngSubmit)="entra()">
-        <label>Utente</label>
-        <input name="username" [(ngModel)]="username" autocomplete="username" />
-
-        <label>Password</label>
-        <input
-          name="password"
-          type="password"
-          [(ngModel)]="password"
-          autocomplete="current-password"
-        />
+        <label>
+          Utente
+          <input name="username" [(ngModel)]="username" autocomplete="username" />
+        </label>
+        <label style="margin-top:0.85rem">
+          Password
+          <input
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            autocomplete="current-password"
+          />
+        </label>
 
         @if (errore()) {
-          <p class="errore">{{ errore() }}</p>
+          <p class="errore" style="margin-top:0.85rem">{{ errore() }}</p>
         }
 
-        <button type="submit" [disabled]="attesa()">
-          {{ attesa() ? 'Attendi…' : 'Entra' }}
+        <button type="submit" [disabled]="attesa()" style="width:100%;margin-top:1.1rem">
+          @if (attesa()) {
+            <span class="spinner-piccolo"></span> Attendi…
+          } @else {
+            Entra
+          }
         </button>
       </form>
     </div>

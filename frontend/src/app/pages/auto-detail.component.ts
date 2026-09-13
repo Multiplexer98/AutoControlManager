@@ -87,9 +87,28 @@ import { Auto, Scadenza, TIPI_SCADENZA } from '../core/models';
             <input name="note" placeholder="Officina, n° polizza…" [(ngModel)]="nuova.note" />
           </label>
         </div>
-        <button type="submit">Salva</button>
+
+        @if (salvataggioInCorso()) {
+          <div class="barra-progresso"><div class="barra-progresso-interna"></div></div>
+        }
+
+        <div class="azioni-form">
+          <button type="submit" [disabled]="salvataggioInCorso()">
+            @if (salvataggioInCorso()) {
+              <span class="spinner-piccolo"></span> Salvataggio…
+            } @else {
+              Salva
+            }
+          </button>
+        </div>
       </form>
     </div>
+
+    @if (mostraConferma()) {
+      <div class="toast-successo">
+        <span class="segno">✓</span> Salvato
+      </div>
+    }
   `,
 })
 export class AutoDetailComponent implements OnInit {
@@ -102,6 +121,8 @@ export class AutoDetailComponent implements OnInit {
   auto = signal<Auto | null>(null);
   scadenze = signal<Scadenza[] | null>(null);
   nuova: Partial<Scadenza> = { tipo: 'TAGLIANDO' };
+  salvataggioInCorso = signal(false);
+  mostraConferma = signal(false);
 
   ngOnInit() {
     const autoId = Number(this.id());
@@ -120,7 +141,7 @@ export class AutoDetailComponent implements OnInit {
   }
 
   salva() {
-    if (!this.nuova.data_prossima_scadenza) return;
+    if (!this.nuova.data_prossima_scadenza || this.salvataggioInCorso()) return;
     // i campi numerici vuoti arrivano come stringa '' dai form template-driven
     const payload: Partial<Scadenza> = {
       ...this.nuova,
@@ -129,9 +150,16 @@ export class AutoDetailComponent implements OnInit {
       data_esecuzione: this.nuova.data_esecuzione || null,
       note: this.nuova.note || null,
     };
-    this.api.creaScadenza(Number(this.id()), payload).subscribe(() => {
-      this.nuova = { tipo: 'TAGLIANDO' };
-      this.ricarica();
+    this.salvataggioInCorso.set(true);
+    this.api.creaScadenza(Number(this.id()), payload).subscribe({
+      next: () => {
+        this.nuova = { tipo: 'TAGLIANDO' };
+        this.ricarica();
+        this.salvataggioInCorso.set(false);
+        this.mostraConferma.set(true);
+        setTimeout(() => this.mostraConferma.set(false), 2400);
+      },
+      error: () => this.salvataggioInCorso.set(false),
     });
   }
 
