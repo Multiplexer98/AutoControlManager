@@ -23,3 +23,5 @@ import { AuthService } from './core/auth.service';
 export class AppComponent {
   auth = inject(AuthService);
 }
+
+//commento per deploy automatico
