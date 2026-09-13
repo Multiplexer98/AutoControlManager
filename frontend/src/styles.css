@@ -10,6 +10,8 @@
   --accento-testo: #ffffff;
   --urgente: #f59e0b;
   --pericolo: #ef4444;
+  --buono: #0ca30c;
+  --serio: #ec835a;
   --ombra: 0 1px 2px rgba(20, 20, 43, 0.04), 0 8px 24px rgba(20, 20, 43, 0.06);
   --raggio: 16px;
   color-scheme: light;
@@ -445,6 +447,207 @@ button.lieve:hover {
   border: 1px solid #fecaca;
   border-radius: 10px;
   padding: 0.6rem 0.8rem;
+}
+
+/* --- Dashboard costi --- */
+.riga-stat {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-tile {
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  padding: 1.1rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--testo-lieve);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.stat-delta {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--testo-lieve);
+}
+
+.stat-delta.buono {
+  color: var(--buono);
+}
+
+.stat-delta.serio {
+  color: var(--serio);
+}
+
+.stat-delta.lieve {
+  font-weight: 400;
+  color: var(--testo-lieve);
+}
+
+.filtri-auto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.chip-auto {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--superficie);
+  color: var(--testo-lieve);
+  border: 1px solid var(--bordo);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: none;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.chip-auto:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--colore-chip, var(--accento));
+}
+
+.chip-auto.attivo {
+  color: var(--testo);
+  border-color: var(--colore-chip, var(--accento));
+  background: color-mix(in srgb, var(--colore-chip, var(--accento)) 12%, var(--superficie));
+}
+
+.chip-auto small {
+  color: var(--testo-lieve);
+  font-weight: 400;
+  font-size: 0.72em;
+}
+
+.chip-auto .pallino {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.legenda-costi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.voce-legenda {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--testo-lieve);
+}
+
+.voce-legenda .pallino {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.grafico-costi-wrap {
+  position: relative;
+}
+
+.grafico-costi-wrap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.grafico-costi-wrap .gridline {
+  stroke: var(--bordo);
+  stroke-width: 1;
+}
+
+.grafico-costi-wrap .asse {
+  stroke: #c3c2b7;
+  stroke-width: 1;
+}
+
+.grafico-costi-wrap .etichetta-asse,
+.grafico-costi-wrap .etichetta-anno {
+  fill: var(--testo-lieve);
+  font-size: 10px;
+}
+
+.grafico-costi-wrap .etichetta-totale {
+  fill: var(--testo);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.grafico-costi-wrap .sfondo-hover {
+  fill: var(--superficie-2);
+}
+
+.grafico-costi-wrap rect[tabindex]:focus {
+  outline: none;
+}
+
+.tooltip-costi {
+  position: absolute;
+  bottom: calc(100% + 0.4rem);
+  transform: translateX(-50%);
+  background: #1a1d29;
+  color: #fff;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(20, 20, 43, 0.25);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.tooltip-costi strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.riga-tooltip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.riga-tooltip.totale {
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.riga-tooltip .chiave {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
 }
 
 /* --- Mobile: nav diventa una tab bar in basso --- */

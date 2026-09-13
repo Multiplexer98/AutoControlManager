@@ -54,3 +54,10 @@ class ScadenzaProssima(ScadenzaOut):
     auto_nome: str
     targa: str
     giorni_mancanti: int
+
+
+class CostoAnno(BaseModel):
+    auto_id: int
+    auto_nome: str
+    anno: int
+    totale: float

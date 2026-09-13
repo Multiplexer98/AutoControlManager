@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
 import { environment } from '../../environments/environment';
-import { Auto, Scadenza, ScadenzaProssima } from './models';
+import { Auto, CostoAnno, Scadenza, ScadenzaProssima } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -49,5 +49,9 @@ export class ApiService {
     return this.http.get<ScadenzaProssima[]>(
       `${this.base}/scadenze/prossime?giorni=${giorni}`,
     );
+  }
+
+  costiPerAnno() {
+    return this.http.get<CostoAnno[]>(`${this.base}/costi`);
   }
 }

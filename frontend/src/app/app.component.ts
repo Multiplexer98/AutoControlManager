@@ -19,6 +19,9 @@ import { AuthService } from './core/auth.service';
         <a class="link" routerLink="/auto" routerLinkActive="attivo">
           <span class="icona">🚗</span><span class="etichetta">Auto</span>
         </a>
+        <a class="link" routerLink="/costi" routerLinkActive="attivo">
+          <span class="icona">📊</span><span class="etichetta">Costi</span>
+        </a>
         <button class="esci" (click)="auth.logout()">
           <span class="icona">🚪</span><span class="etichetta">Esci</span>
         </button>

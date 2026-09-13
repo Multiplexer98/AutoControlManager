@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from auth import utente_corrente
 from db import execute, rows_to_dicts
-from models import ScadenzaIn, ScadenzaOut, ScadenzaProssima
+from models import CostoAnno, ScadenzaIn, ScadenzaOut, ScadenzaProssima
 
 router = APIRouter(tags=["scadenze"], dependencies=[Depends(utente_corrente)])
 
@@ -94,3 +94,25 @@ async def prossime_scadenze(giorni: int = 90):
         }
         for r in rows_to_dicts(rs)
     ]
+
+
+@router.get("/costi", response_model=list[CostoAnno])
+async def costi_per_anno():
+    """Totale speso per auto e anno (anche auto archiviate, per non perdere lo storico).
+
+    L'anno è quello di data_esecuzione, o della prossima scadenza se la prima manca
+    (es. bollo/assicurazione spesso non hanno una "data di esecuzione" propria).
+    """
+    anno_espressione = "strftime('%Y', COALESCE(s.data_esecuzione, s.data_prossima_scadenza))"
+    rs = await execute(
+        f"SELECT s.auto_id, a.nome AS auto_nome, "
+        f"CAST({anno_espressione} AS INTEGER) AS anno, "
+        f"SUM(s.costo) AS totale "
+        f"FROM scadenza s JOIN auto a ON a.id = s.auto_id "
+        f"WHERE s.costo IS NOT NULL "
+        # raggruppa sull'espressione, non sull'alias 'anno': con l'alias + CAST
+        # alcuni motori SQL (incluso libSQL) accorpano righe in modo scorretto
+        f"GROUP BY s.auto_id, {anno_espressione} "
+        f"ORDER BY anno, a.nome"
+    )
+    return rows_to_dicts(rs)

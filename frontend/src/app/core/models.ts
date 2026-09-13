@@ -39,3 +39,10 @@ export interface ScadenzaProssima extends Scadenza {
   targa: string;
   giorni_mancanti: number;
 }
+
+export interface CostoAnno {
+  auto_id: number;
+  auto_nome: string;
+  anno: number;
+  totale: number;
+}
