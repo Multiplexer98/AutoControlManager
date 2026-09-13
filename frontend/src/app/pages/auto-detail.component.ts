@@ -15,42 +15,52 @@ import { Auto, Scadenza, TIPI_SCADENZA } from '../core/models';
     }
 
     <h3>Storico e scadenze</h3>
-    @if (scadenze().length === 0) {
+    @if (scadenze() === null) {
+      <div class="stato-caricamento">
+        <div class="spinner"></div>
+        <p>Caricamento…</p>
+      </div>
+    } @else if (scadenze()!.length === 0) {
       <p class="vuoto">Nessuna registrazione.</p>
     } @else {
-      <table>
-        <tr>
-          <th>Tipo</th>
-          <th>Eseguito il</th>
-          <th>Km</th>
-          <th>Prossima scadenza</th>
-          <th>Costo</th>
-          <th>Note</th>
-          <th></th>
-        </tr>
-        @for (s of scadenze(); track s.id) {
+      <div class="tabella-wrap">
+        <table>
           <tr>
-            <td>{{ s.tipo }}</td>
-            <td>{{ s.data_esecuzione | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ s.km_esecuzione }}</td>
-            <td>{{ s.data_prossima_scadenza | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ s.costo ? (s.costo | number: '1.2-2') + ' €' : '' }}</td>
-            <td>{{ s.note }}</td>
-            <td><button class="lieve" (click)="elimina(s)">Elimina</button></td>
+            <th>Tipo</th>
+            <th>Eseguito il</th>
+            <th>Km</th>
+            <th>Prossima scadenza</th>
+            <th>Costo</th>
+            <th>Note</th>
+            <th></th>
           </tr>
-        }
-      </table>
+          @for (s of scadenze(); track s.id) {
+            <tr>
+              <td>{{ s.tipo }}</td>
+              <td>{{ s.data_esecuzione | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ s.km_esecuzione }}</td>
+              <td>{{ s.data_prossima_scadenza | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ s.costo ? (s.costo | number: '1.2-2') + ' €' : '' }}</td>
+              <td>{{ s.note }}</td>
+              <td><button class="lieve" (click)="elimina(s)">Elimina</button></td>
+            </tr>
+          }
+        </table>
+      </div>
     }
 
     <div class="card">
       <h3>Registra intervento / scadenza</h3>
       <form (ngSubmit)="salva()">
         <div class="riga">
-          <select name="tipo" [(ngModel)]="nuova.tipo">
-            @for (t of tipi; track t) {
-              <option [value]="t">{{ t }}</option>
-            }
-          </select>
+          <label>
+            Tipo
+            <select name="tipo" [(ngModel)]="nuova.tipo">
+              @for (t of tipi; track t) {
+                <option [value]="t">{{ t }}</option>
+              }
+            </select>
+          </label>
           <label>
             Eseguito il
             <input name="de" type="date" [(ngModel)]="nuova.data_esecuzione" />
@@ -72,7 +82,10 @@ import { Auto, Scadenza, TIPI_SCADENZA } from '../core/models';
             Costo
             <input name="costo" type="number" step="0.01" [(ngModel)]="nuova.costo" />
           </label>
-          <input name="note" placeholder="Note (officina, n° polizza…)" [(ngModel)]="nuova.note" />
+          <label>
+            Note
+            <input name="note" placeholder="Officina, n° polizza…" [(ngModel)]="nuova.note" />
+          </label>
         </div>
         <button type="submit">Salva</button>
       </form>
@@ -87,7 +100,7 @@ export class AutoDetailComponent implements OnInit {
 
   tipi = TIPI_SCADENZA;
   auto = signal<Auto | null>(null);
-  scadenze = signal<Scadenza[]>([]);
+  scadenze = signal<Scadenza[] | null>(null);
   nuova: Partial<Scadenza> = { tipo: 'TAGLIANDO' };
 
   ngOnInit() {

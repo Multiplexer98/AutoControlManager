@@ -10,9 +10,18 @@ import { AuthService } from './core/auth.service';
   template: `
     @if (auth.autenticato) {
       <nav>
-        <a routerLink="/prossime" routerLinkActive="attivo">Prossime scadenze</a>
-        <a routerLink="/auto" routerLinkActive="attivo">Auto</a>
-        <button class="lieve" (click)="auth.logout()">Esci</button>
+        <a class="brand" routerLink="/prossime">
+          <span class="puntino"></span> AutoControlManager
+        </a>
+        <a class="link" routerLink="/prossime" routerLinkActive="attivo">
+          <span class="icona">📅</span><span class="etichetta">Prossime</span>
+        </a>
+        <a class="link" routerLink="/auto" routerLinkActive="attivo">
+          <span class="icona">🚗</span><span class="etichetta">Auto</span>
+        </a>
+        <button class="esci" (click)="auth.logout()">
+          <span class="icona">🚪</span><span class="etichetta">Esci</span>
+        </button>
       </nav>
     }
     <main>
@@ -23,5 +32,3 @@ import { AuthService } from './core/auth.service';
 export class AppComponent {
   auth = inject(AuthService);
 }
-
-//commento per deploy automatico

@@ -12,38 +12,61 @@ import { Auto } from '../core/models';
   template: `
     <h2>Le mie auto</h2>
 
-    <table>
-      <tr>
-        <th>Nome</th>
-        <th>Targa</th>
-        <th>Modello</th>
-        <th>Anno</th>
-        <th></th>
-      </tr>
-      @for (a of auto(); track a.id) {
-        <tr>
-          <td><a [routerLink]="['/auto', a.id]">{{ a.nome }}</a></td>
-          <td>{{ a.targa }}</td>
-          <td>{{ a.modello }}</td>
-          <td>{{ a.anno }}</td>
-          <td>
-            <button class="lieve" (click)="archivia(a)">Archivia</button>
-          </td>
-        </tr>
-      }
-    </table>
+    @if (auto() === null) {
+      <div class="stato-caricamento">
+        <div class="spinner"></div>
+        <p>Caricamento auto…</p>
+      </div>
+    } @else if (auto()!.length === 0) {
+      <p class="vuoto">Nessuna auto registrata: aggiungine una qui sotto.</p>
+    } @else {
+      <div class="tabella-wrap">
+        <table>
+          <tr>
+            <th>Nome</th>
+            <th>Targa</th>
+            <th>Modello</th>
+            <th>Anno</th>
+            <th></th>
+          </tr>
+          @for (a of auto(); track a.id) {
+            <tr>
+              <td><a [routerLink]="['/auto', a.id]">{{ a.nome }}</a></td>
+              <td>{{ a.targa }}</td>
+              <td>{{ a.modello }}</td>
+              <td>{{ a.anno }}</td>
+              <td>
+                <button class="lieve" (click)="archivia(a)">Archivia</button>
+              </td>
+            </tr>
+          }
+        </table>
+      </div>
+    }
 
     <div class="card">
       <h3>Aggiungi auto</h3>
-      @if (auto().length >= 5) {
+      @if ((auto() ?? []).length >= 5) {
         <p class="vuoto">Limite di 5 auto attive raggiunto.</p>
       } @else {
         <form (ngSubmit)="aggiungi()">
           <div class="riga">
-            <input name="nome" placeholder="Nome (es. Panda di papà)" [(ngModel)]="nuova.nome" required />
-            <input name="targa" placeholder="Targa" [(ngModel)]="nuova.targa" required />
-            <input name="modello" placeholder="Modello (opz.)" [(ngModel)]="nuova.modello" />
-            <input name="anno" type="number" placeholder="Anno (opz.)" [(ngModel)]="nuova.anno" />
+            <label>
+              Nome
+              <input name="nome" placeholder="es. Panda di papà" [(ngModel)]="nuova.nome" required />
+            </label>
+            <label>
+              Targa
+              <input name="targa" placeholder="Targa" [(ngModel)]="nuova.targa" required />
+            </label>
+            <label>
+              Modello
+              <input name="modello" placeholder="Opzionale" [(ngModel)]="nuova.modello" />
+            </label>
+            <label>
+              Anno
+              <input name="anno" type="number" placeholder="Opzionale" [(ngModel)]="nuova.anno" />
+            </label>
           </div>
           <button type="submit">Aggiungi</button>
         </form>
@@ -53,7 +76,7 @@ import { Auto } from '../core/models';
 })
 export class AutoListComponent {
   private api = inject(ApiService);
-  auto = signal<Auto[]>([]);
+  auto = signal<Auto[] | null>(null);
   nuova: Partial<Auto> = {};
 
   constructor() {
